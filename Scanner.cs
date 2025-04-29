@@ -1,8 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Tracing;
-using System.Dynamic;
-using System.Text.RegularExpressions;
-
 class Scanner
 {
     private readonly string source;
