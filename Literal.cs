@@ -1,5 +1,5 @@
 record Literal(
-    object Value
+    object? Value
 ) : Expr
 {
     public override R Accept<R>(IVisitor<R> visitor)

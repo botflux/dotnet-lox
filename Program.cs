@@ -51,9 +51,17 @@ void Run(string source)
 {
     var scanner = new Scanner(source);
     var tokens = scanner.ScanTokens();
+    var parser = new Parser(tokens);
+    var expression = parser.Parse();
 
-    foreach (var token in tokens)
+    if (Reporter.HadError)
+        return;
+
+    if (expression == null)
     {
-        Console.WriteLine(token);
+        Console.WriteLine("The parser returned no expression");
+        return;
     }
+
+    Console.WriteLine(new AstPrinter().Print(expression));
 }
