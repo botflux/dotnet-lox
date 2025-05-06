@@ -3,6 +3,7 @@ using System.Dynamic;
 abstract class Reporter
 {
     public static bool HadError { get; private set; }
+    public static bool HadRuntimeError { get;  private set; }
 
     public static void Report(int line, string where, string message)
     {
@@ -25,5 +26,11 @@ abstract class Reporter
         {
             Report(token.Line, $" at '{token.Lexeme}'", message);
         }
+    }
+
+    public static void RuntimeError(RuntimeError error)
+    {
+        Console.WriteLine($"{error.Message}\n[line {error.Token.Line}]");
+        HadRuntimeError = true;
     }
 }

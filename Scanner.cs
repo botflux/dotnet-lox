@@ -225,7 +225,6 @@ class Scanner
                 Advance();
         }
 
-        Console.WriteLine($"{start} {current - start} {source}");
         AddToken(TokenType.Number, double.Parse(source.Substring(start, current - start)));
     }
 

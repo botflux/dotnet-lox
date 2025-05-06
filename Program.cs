@@ -4,6 +4,7 @@
 using System.Text;
 
 var arguments = Environment.GetCommandLineArgs();
+var interpreter = new Interpreter();
 
 if (arguments.Length > 2)
 {
@@ -27,6 +28,11 @@ void RunFile(string filename)
     if (Reporter.HadError)
     {
         Environment.Exit(65);
+    }
+
+    if (Reporter.HadRuntimeError)
+    {
+        Environment.Exit(70);
     }
 }
 
@@ -63,5 +69,5 @@ void Run(string source)
         return;
     }
 
-    Console.WriteLine(new AstPrinter().Print(expression));
+    interpreter.Interpret(expression);
 }
