@@ -1,16 +1,50 @@
-class Interpreter : IVisitor<object?>
+using dotnet_lox;
+
+class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
 {
-    public void Interpret(Expr expression)
+    private LoxEnvironment _environment = new();
+    
+    public void Interpret(List<Stmt> statements)
     {
         try
         {
-            var value = Evaluate(expression);
-            Console.WriteLine(Stringify(value));
+            foreach (var statement in statements)
+            {
+                Execute(statement);
+            }
         }
         catch (RuntimeError error)
         {
             Reporter.RuntimeError(error);
         }
+    }
+
+    public Nothing Visit(Var var)
+    {
+        var value = var.Initializer != null
+            ? Evaluate(var.Initializer)
+            : null;
+
+        _environment.Define(var.Name, value);
+        return Nothing.N;
+    }
+
+    public Nothing Visit(Print print)
+    {
+        var value = Evaluate(print.Expression);
+        Console.WriteLine(Stringify(value));
+        return Nothing.N;
+    }
+
+    public Nothing Visit(Expression expression)
+    {
+        Evaluate(expression.Expr);
+        return Nothing.N;
+    }
+
+    public object? Visit(Variable variable)
+    {
+        return _environment.Get(variable.Name);
     }
 
     public object? Visit(Binary binary)
@@ -44,6 +78,39 @@ class Interpreter : IVisitor<object?>
         };
     }
 
+    public object? Visit(Assign assign)
+    {
+        var value = Evaluate(assign.Value);
+        _environment.Assign(assign.Name, value);
+        return value;
+    }
+
+    public Nothing Visit(Block block)
+    {
+        ExecuteBlock(block.Statements, new LoxEnvironment(_environment));
+        
+        return Nothing.N;
+    }
+
+    void ExecuteBlock(List<Stmt> statements, LoxEnvironment environment)
+    {
+        var previous = this._environment;
+
+        try
+        {
+            _environment = environment;
+
+            foreach (var statement in statements)
+            {
+                Execute(statement);
+            }
+        }
+        finally
+        {
+            this._environment = previous;
+        }
+    }
+
     public object? Visit(Grouping grouping)
     {
         return Evaluate(grouping.Expression);
@@ -70,6 +137,11 @@ class Interpreter : IVisitor<object?>
     object? Evaluate(Expr expression)
     {
         return expression.Accept(this);
+    }
+
+    void Execute(Stmt statement)
+    {
+        statement.Accept(this);
     }
 
     bool IsTruthy(object? value)

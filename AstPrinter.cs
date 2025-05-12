@@ -1,13 +1,23 @@
 using System.Text;
 
-class AstPrinter : IVisitor<string>
+class AstPrinter : IExprVisitor<string>
 {
-
+    
     public string Print(Expr expr)
     {
         return expr.Accept(this);
     }
 
+    public string Visit(Variable variable)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string Visit(Assign assign)
+    {
+        throw new NotImplementedException();
+    }
+    
     public string Visit(Binary binary)
     {
         return Parenthesize(binary.Op.Lexeme, binary.Left, binary.Right);

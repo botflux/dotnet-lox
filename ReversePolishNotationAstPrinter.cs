@@ -1,4 +1,4 @@
-class ReversePolishNotationAstPrinter : IVisitor<string>
+class ReversePolishNotationAstPrinter : IExprVisitor<string>
 {
     public string Print(Expr expr)
     {
@@ -23,5 +23,15 @@ class ReversePolishNotationAstPrinter : IVisitor<string>
     public string Visit(Literal literal)
     {
         return literal.Value?.ToString() ?? "nil";
+    }
+
+    public string Visit(Variable variable)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string Visit(Assign assign)
+    {
+        throw new NotImplementedException(); 
     }
 }
