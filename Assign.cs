@@ -1,5 +1,6 @@
+namespace dotnet_lox;
 
-record Assign(Token Name, Expr Value) : Expr
+internal record Assign(Token Name, Expr Value) : Expr
 {
-    public override R Accept<R>(IExprVisitor<R> visitor) => visitor.Visit(this);
+    public override T Accept<T>(IExprVisitor<T> visitor) => visitor.Visit(this);
 }

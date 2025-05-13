@@ -1,4 +1,6 @@
-class RuntimeError : Exception
+namespace dotnet_lox;
+
+internal class RuntimeError : Exception
 {
     public Token Token { get; init; }
 

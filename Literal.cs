@@ -1,4 +1,6 @@
-record Literal(
+namespace dotnet_lox;
+
+internal record Literal(
     object? Value
 ) : Expr
 {

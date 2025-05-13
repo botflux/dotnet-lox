@@ -2,6 +2,7 @@
 
 
 using System.Text;
+using dotnet_lox;
 
 var arguments = Environment.GetCommandLineArgs();
 var interpreter = new Interpreter();

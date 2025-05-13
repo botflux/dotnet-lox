@@ -1,7 +1,9 @@
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
-class Parser
+namespace dotnet_lox;
+
+internal class Parser
 {
     private class ParseError : Exception {}
 

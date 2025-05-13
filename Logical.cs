@@ -1,4 +1,6 @@
-record Logical(Expr Left, Token Operator, Expr Right) : Expr
+namespace dotnet_lox;
+
+internal record Logical(Expr Left, Token Operator, Expr Right) : Expr
 {
-    public override R Accept<R>(IExprVisitor<R> visitor) => visitor.Visit(this);
+    public override T Accept<T>(IExprVisitor<T> visitor) => visitor.Visit(this);
 };

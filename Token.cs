@@ -1,4 +1,6 @@
-record Token(
+namespace dotnet_lox;
+
+internal record Token(
     TokenType Type,
     string Lexeme,
     object? Literal,

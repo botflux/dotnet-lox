@@ -1,8 +1,10 @@
-interface IStmtVisitor<R>
+namespace dotnet_lox;
+
+internal interface IStmtVisitor<T>
 {
-    R Visit(Print print);
-    R Visit(Expression expression);
-    R Visit(Var var);
-    R Visit(Block block);
-    R Visit(If @if);
+    T Visit(Print print);
+    T Visit(Expression expression);
+    T Visit(Var var);
+    T Visit(Block block);
+    T Visit(If @if);
 }

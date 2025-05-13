@@ -1,4 +1,6 @@
-class Scanner
+namespace dotnet_lox;
+
+internal class Scanner
 {
     private readonly string source;
     private readonly List<Token> tokens = [];

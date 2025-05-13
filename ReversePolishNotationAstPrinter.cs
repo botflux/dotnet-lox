@@ -1,3 +1,5 @@
+namespace dotnet_lox;
+
 class ReversePolishNotationAstPrinter : IExprVisitor<string>
 {
     public string Print(Expr expr)

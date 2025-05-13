@@ -1,4 +1,6 @@
-enum TokenType
+namespace dotnet_lox;
+
+internal enum TokenType
 {
     LeftParen, RightParen, LeftBrace, RightBrace,
     Comma, Dot, Minus, Plus, SemiColon, Slash, Star,

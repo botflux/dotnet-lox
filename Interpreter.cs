@@ -1,6 +1,6 @@
-using dotnet_lox;
+namespace dotnet_lox;
 
-class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
+internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
 {
     private LoxEnvironment _environment = new();
     

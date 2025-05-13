@@ -1,4 +1,6 @@
-record Grouping(
+namespace dotnet_lox;
+
+internal record Grouping(
     Expr Expression
 ) : Expr
 {

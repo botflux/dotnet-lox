@@ -1,4 +1,6 @@
-record Variable(Token Name) : Expr
+namespace dotnet_lox;
+
+internal record Variable(Token Name) : Expr
 {
-    public override R Accept<R>(IExprVisitor<R> visitor) => visitor.Visit(this);
+    public override T Accept<T>(IExprVisitor<T> visitor) => visitor.Visit(this);
 }

@@ -1,4 +1,6 @@
-record Unary(
+namespace dotnet_lox;
+
+internal record Unary(
     Token Op,
     Expr Right
 ) : Expr

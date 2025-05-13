@@ -1,4 +1,6 @@
-record Binary(
+namespace dotnet_lox;
+
+internal record Binary(
     Expr Left,
     Token Op,
     Expr Right

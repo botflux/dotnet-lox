@@ -1,6 +1,7 @@
 using System.Dynamic;
+namespace dotnet_lox;
 
-abstract class Reporter
+internal abstract class Reporter
 {
     public static bool HadError { get; private set; }
     public static bool HadRuntimeError { get;  private set; }

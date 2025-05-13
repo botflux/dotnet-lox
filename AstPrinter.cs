@@ -1,5 +1,7 @@
 using System.Text;
 
+namespace dotnet_lox;
+
 class AstPrinter : IExprVisitor<string>
 {
     
