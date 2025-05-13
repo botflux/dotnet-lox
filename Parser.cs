@@ -60,6 +60,11 @@ internal class Parser
 
     Stmt Statement()
     {
+        if (Match(TokenType.For))
+        {
+            return ForStatement();
+        }
+        
         if (Match(TokenType.If))
         {
             return IfStatement();
@@ -81,6 +86,58 @@ internal class Parser
         }
         
         return ExpressionStatement();
+    }
+
+    private Stmt ForStatement()
+    {
+        Consume(TokenType.LeftParen, "Expect '(' after 'for'.");
+        Stmt? initializer = null;
+
+        if (Match(TokenType.SemiColon))
+            initializer = null;
+        else if (Match(TokenType.Var))
+            initializer = VarDeclaration();
+        else
+            initializer = ExpressionStatement();
+
+        Expr? condition = null;
+
+        if (!Check(TokenType.SemiColon))
+            condition = Expression();
+
+        Consume(TokenType.SemiColon, "Expect ';' after for condition.");
+
+        Expr? increment = null;
+        
+        if (!Check(TokenType.RightParen))
+            increment = Expression();
+        
+        Consume(TokenType.RightParen, "Expect ')' after for clauses.");
+        
+        var body = Statement();
+
+        if (increment != null)
+        {
+            body = new Block([
+                body,
+                new Expression(increment)
+            ]);
+        }
+
+        body = new While(
+            condition ?? new Literal(true),
+            body
+        );
+
+        if (initializer != null)
+        {
+            body = new Block([
+                initializer,
+                body,
+            ]);
+        }
+        
+        return body;
     }
 
     private Stmt WhileStatement()
