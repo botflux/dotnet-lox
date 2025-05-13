@@ -31,11 +31,11 @@ class LoxEnvironment
         if (_values.ContainsKey(name.Lexeme))
         {
             _values[name.Lexeme] = value;
-            
+            return;
         }
 
         if (_enclosing == null) throw new RuntimeError(name, $"Undefined variable '{name}'.");
-        
+
         _enclosing.Assign(name, value);
     }
 }

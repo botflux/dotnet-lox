@@ -49,6 +49,16 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
         return Nothing.N;
     }
 
+    public Nothing Visit(While @while)
+    {
+        while (IsTruthy(Evaluate(@while.Condition)))
+        {
+            Execute(@while.Body);
+        }
+        
+        return Nothing.N;
+    }
+
     public object? Visit(Logical logical)
     {
         var left = Evaluate(logical.Left);
@@ -123,7 +133,7 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
 
     void ExecuteBlock(List<Stmt> statements, LoxEnvironment environment)
     {
-        var previous = this._environment;
+        var previous = _environment;
 
         try
         {
@@ -136,7 +146,7 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
         }
         finally
         {
-            this._environment = previous;
+            _environment = previous;
         }
     }
 

@@ -7,4 +7,5 @@ internal interface IStmtVisitor<T>
     T Visit(Var var);
     T Visit(Block block);
     T Visit(If @if);
+    T Visit(While @while);
 }

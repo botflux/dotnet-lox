@@ -1,6 +1,3 @@
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-
 namespace dotnet_lox;
 
 internal class Parser
@@ -67,6 +64,11 @@ internal class Parser
         {
             return IfStatement();
         }
+
+        if (Match(TokenType.While))
+        {
+            return WhileStatement();
+        }
         
         if (Match(TokenType.Print))
         {
@@ -79,6 +81,16 @@ internal class Parser
         }
         
         return ExpressionStatement();
+    }
+
+    private Stmt WhileStatement()
+    {
+        Consume(TokenType.LeftParen, "Expect '(' after 'while'.");
+        var condition = Expression();
+        Consume(TokenType.RightParen, "Expect ')' after while condition.");
+        var body = Statement();
+        
+        return new While(condition, body);
     }
 
     Stmt IfStatement()
