@@ -6,4 +6,5 @@ interface IExprVisitor<R>
     R Visit(Literal literal);
     R Visit(Variable variable);
     R Visit(Assign assign);
+    R Visit(Logical logical);
 }

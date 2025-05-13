@@ -61,6 +61,11 @@ class Parser
 
     Stmt Statement()
     {
+        if (Match(TokenType.If))
+        {
+            return IfStatement();
+        }
+        
         if (Match(TokenType.Print))
         {
             return PrintStatement();
@@ -72,6 +77,20 @@ class Parser
         }
         
         return ExpressionStatement();
+    }
+
+    Stmt IfStatement()
+    {
+        Consume(TokenType.LeftParen, "Expect '(' after 'if'.");
+        var condition = Expression();
+        Consume(TokenType.RightParen, "Expect ')' after if condition.");
+
+        var thenBranch = Statement();
+        var elseBranch = Match(TokenType.Else)
+            ? Statement()
+            : null;
+
+        return new If(condition, thenBranch, elseBranch);
     }
 
     Stmt ExpressionStatement()
@@ -109,9 +128,37 @@ class Parser
         return Assignment();
     }
 
-    Expr Assignment()
+    Expr Or()
+    {
+        var expr = And();
+
+        while (Match(TokenType.Or))
+        {
+            var op = Previous();
+            var right = And();
+            expr = new Logical(expr, op, right);
+        }
+
+        return expr;
+    }
+
+    Expr And()
     {
         var expr = Equality();
+
+        while (Match(TokenType.And))
+        {
+            var op = Previous();
+            var right = Equality();
+            expr = new Logical(expr, op, right);
+        }
+
+        return expr;
+    }
+    
+    Expr Assignment()
+    {
+        var expr = Or();
 
         if (!Match(TokenType.Equal))
         {

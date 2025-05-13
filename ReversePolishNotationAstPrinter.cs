@@ -34,4 +34,9 @@ class ReversePolishNotationAstPrinter : IExprVisitor<string>
     {
         throw new NotImplementedException(); 
     }
+
+    public string Visit(Logical logical)
+    {
+        throw new NotImplementedException();
+    }
 }

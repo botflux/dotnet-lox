@@ -36,6 +36,35 @@ class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
         return Nothing.N;
     }
 
+    public Nothing Visit(If @if)
+    {
+        if (IsTruthy(Evaluate(@if.Condition)))
+        {
+            Execute(@if.ThenBranch);
+        }
+        else if (@if.ElseBranch != null)
+        {
+            Execute(@if.ElseBranch);
+        }
+        return Nothing.N;
+    }
+
+    public object? Visit(Logical logical)
+    {
+        var left = Evaluate(logical.Left);
+
+        if (logical.Operator.Type == TokenType.Or)
+        {
+            if (IsTruthy(left)) return left;
+        }
+        else
+        {
+            if (!IsTruthy(left)) return left;
+        }
+
+        return Evaluate(logical.Right);
+    }
+
     public Nothing Visit(Expression expression)
     {
         Evaluate(expression.Expr);

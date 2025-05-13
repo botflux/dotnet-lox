@@ -38,6 +38,11 @@ class AstPrinter : IExprVisitor<string>
         return literal.Value?.ToString() ?? "nil";
     }
 
+    public string Visit(Logical logical)
+    {
+        throw new NotImplementedException();
+    }
+
     private string Parenthesize(string name, params Expr[] exprs)
     {
         var builder = new StringBuilder();
