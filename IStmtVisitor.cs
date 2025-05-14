@@ -8,4 +8,6 @@ internal interface IStmtVisitor<T>
     T Visit(Block block);
     T Visit(If @if);
     T Visit(While @while);
+    T Visit(Break @break);
+    T Visit(Continue @continue);
 }

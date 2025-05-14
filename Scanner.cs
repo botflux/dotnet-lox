@@ -28,7 +28,9 @@ internal class Scanner
         { "this", TokenType.This },
         { "true", TokenType.True },
         { "var", TokenType.Var },
-        { "while", TokenType.While}
+        { "while", TokenType.While },
+        { "break", TokenType.Break },
+        { "continue", TokenType.Continue },
     };
 
     public Scanner(string source)
@@ -44,7 +46,7 @@ internal class Scanner
             ScanToken();
         }
 
-        tokens.Add(new Token(TokenType.EOF, "", null, line));
+        tokens.Add(new Token(TokenType.Eof, "", null, line));
         return tokens;
     }
 

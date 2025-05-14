@@ -18,7 +18,7 @@ internal class Parser
 
         while (!IsAtEnd())
         {
-            var d = Declaration();
+            var d = Declaration(false);
 
             if (d != null)
             {
@@ -29,7 +29,7 @@ internal class Parser
         return statements;
     }
 
-    Stmt? Declaration()
+    Stmt? Declaration(bool isParsingLoop)
     {
         try
         {
@@ -38,7 +38,7 @@ internal class Parser
                 return VarDeclaration();
             }
 
-            return Statement();
+            return Statement(isParsingLoop);
         }
         catch (ParseError)
         {
@@ -57,9 +57,29 @@ internal class Parser
         Consume(TokenType.SemiColon, "Expect ';' after variable declaration.");
         return new Var(name, initializer);
     }
-
-    Stmt Statement()
+    
+    Stmt Statement(bool isParsingLoop)
     {
+        if(Match(TokenType.Break)) 
+        {
+            if (isParsingLoop)
+            {
+                return BreakStatement();    
+            }
+            
+            throw Error(Peek(), "Cannot declare a break statement outside a loop.");
+        }
+
+        if (Match(TokenType.Continue))
+        {
+            if (isParsingLoop)
+            {
+                return ContinueStatement();
+            }
+            
+            throw Error(Peek(), "Cannot declare a continue statement outside a loop.");
+        }
+        
         if (Match(TokenType.For))
         {
             return ForStatement();
@@ -67,7 +87,7 @@ internal class Parser
         
         if (Match(TokenType.If))
         {
-            return IfStatement();
+            return IfStatement(isParsingLoop);
         }
 
         if (Match(TokenType.While))
@@ -82,10 +102,22 @@ internal class Parser
 
         if (Match(TokenType.LeftBrace))
         {
-            return new Block(Block());
+            return new Block(Block(isParsingLoop));
         }
         
         return ExpressionStatement();
+    }
+
+    private Stmt ContinueStatement()
+    {
+        Consume(TokenType.SemiColon, "Expect ';' after continue.");
+        return new Continue();
+    }
+
+    private Stmt BreakStatement()
+    {
+        Consume(TokenType.SemiColon, "Expect ';' after break.");
+        return new Break();
     }
 
     private Stmt ForStatement()
@@ -114,7 +146,7 @@ internal class Parser
         
         Consume(TokenType.RightParen, "Expect ')' after for clauses.");
         
-        var body = Statement();
+        var body = Statement(true);
 
         if (increment != null)
         {
@@ -145,20 +177,20 @@ internal class Parser
         Consume(TokenType.LeftParen, "Expect '(' after 'while'.");
         var condition = Expression();
         Consume(TokenType.RightParen, "Expect ')' after while condition.");
-        var body = Statement();
+        var body = Statement(true);
         
         return new While(condition, body);
     }
 
-    Stmt IfStatement()
+    Stmt IfStatement(bool isParsingLoop)
     {
         Consume(TokenType.LeftParen, "Expect '(' after 'if'.");
         var condition = Expression();
         Consume(TokenType.RightParen, "Expect ')' after if condition.");
 
-        var thenBranch = Statement();
+        var thenBranch = Statement(isParsingLoop);
         var elseBranch = Match(TokenType.Else)
-            ? Statement()
+            ? Statement(isParsingLoop)
             : null;
 
         return new If(condition, thenBranch, elseBranch);
@@ -171,13 +203,13 @@ internal class Parser
         return new Expression(expr);
     }
 
-    List<Stmt> Block()
+    List<Stmt> Block(bool isParsingLoop)
     {
         var statements = new List<Stmt>();
 
         while (!Check(TokenType.RightBrace) && !IsAtEnd())
         {
-            var declaration = Declaration();
+            var declaration = Declaration(isParsingLoop);
             
             if (declaration != null)
                 statements.Add(declaration);
@@ -411,7 +443,7 @@ internal class Parser
 
     bool IsAtEnd()
     {
-        return Peek().Type == TokenType.EOF;
+        return Peek().Type == TokenType.Eof;
     }
 
     Token Peek()

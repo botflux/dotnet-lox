@@ -53,10 +53,29 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
     {
         while (IsTruthy(Evaluate(@while.Condition)))
         {
-            Execute(@while.Body);
+            try
+            {
+                Execute(@while.Body);
+            }
+            catch (BreakLoopException)
+            {
+                break;
+            }
+            catch (ContinueLoopException)
+            {}
         }
         
         return Nothing.N;
+    }
+
+    public Nothing Visit(Break @break)
+    {
+        throw new BreakLoopException();
+    }
+
+    public Nothing Visit(Continue @continue)
+    {
+        throw new ContinueLoopException();
     }
 
     public object? Visit(Logical logical)
@@ -224,4 +243,7 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
 
         return text;
     }
+    
+    private class BreakLoopException : Exception {}
+    private class ContinueLoopException : Exception {}
 }

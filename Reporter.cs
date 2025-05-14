@@ -19,7 +19,7 @@ internal abstract class Reporter
 
     public static void Error(Token token, string message)
     {
-        if (token.Type == TokenType.EOF)
+        if (token.Type == TokenType.Eof)
         {
             Report(token.Line, " at end", message);
         }
