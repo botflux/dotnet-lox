@@ -2,7 +2,18 @@ namespace dotnet_lox;
 
 internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
 {
-    private LoxEnvironment _environment = new();
+    private readonly LoxEnvironment _globals = new();
+    private LoxEnvironment _environment;
+
+    public Interpreter()
+    {
+        _environment = _globals;
+        
+        _globals.Define(
+            new Token(TokenType.Identifier, "clock", null, -1), 
+            new Clock()
+        );
+    }
     
     public void Interpret(List<Stmt> statements)
     {
@@ -59,6 +70,23 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
         return Nothing.N;
     }
 
+    public Nothing Visit(Function expression)
+    {
+        var function = new FunctionObject(expression, _environment);
+        _environment.Define(expression.Name, function);
+        return Nothing.N;
+    }
+
+    public Nothing Visit(Return stmt)
+    {
+        object? value = null;
+
+        if (stmt.Value != null)
+            value = Evaluate(stmt.Value);
+
+        throw new ReturnException(value);
+    }
+
     public object? Visit(Logical logical)
     {
         var left = Evaluate(logical.Left);
@@ -73,6 +101,26 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
         }
 
         return Evaluate(logical.Right);
+    }
+
+    public object? Visit(Call call)
+    {
+        var callee = Evaluate(call.Callee);
+        var arguments = call.Arguments
+            .Select(arg => Evaluate(arg))
+            .ToList();
+
+        if (callee is ICallable callable)
+        {
+            if (callable.Arity != arguments.Count)
+            {
+                throw new RuntimeError(call.Paren, $"Expect {callable.Arity} arguments but got {arguments.Count}.");
+            }
+            
+            return callable.Call(this, arguments);
+        }
+
+        throw new RuntimeError(call.Paren, "Can only call functions and classes");
     }
 
     public Nothing Visit(Expression expression)
@@ -131,7 +179,7 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
         return Nothing.N;
     }
 
-    void ExecuteBlock(List<Stmt> statements, LoxEnvironment environment)
+    public void ExecuteBlock(List<Stmt> statements, LoxEnvironment environment)
     {
         var previous = _environment;
 
