@@ -45,6 +45,16 @@ class AstPrinter : IExprVisitor<string>
         throw new NotImplementedException();
     }
 
+    public string Visit(Call call)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string Visit(Function function)
+    {
+        throw new NotImplementedException();
+    }
+
     private string Parenthesize(string name, params Expr[] exprs)
     {
         var builder = new StringBuilder();

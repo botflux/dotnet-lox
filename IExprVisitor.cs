@@ -1,12 +1,14 @@
 namespace dotnet_lox;
 
-internal interface IExprVisitor<R>
+internal interface IExprVisitor<T>
 {
-    R Visit(Binary binary);
-    R Visit(Grouping grouping);
-    R Visit(Unary unary);
-    R Visit(Literal literal);
-    R Visit(Variable variable);
-    R Visit(Assign assign);
-    R Visit(Logical logical);
+    T Visit(Binary binary);
+    T Visit(Grouping grouping);
+    T Visit(Unary unary);
+    T Visit(Literal literal);
+    T Visit(Variable variable);
+    T Visit(Assign assign);
+    T Visit(Logical logical);
+    T Visit(Call call);
+    T Visit(Function function);
 }
