@@ -123,6 +123,11 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
         throw new RuntimeError(call.Paren, "Can only call functions and classes");
     }
 
+    public object? Visit(AnonymousFunction anonymous)
+    {
+        return new FunctionObject(anonymous, _environment);
+    }
+
     public Nothing Visit(Expression expression)
     {
         Evaluate(expression.Expr);

@@ -1,6 +1,6 @@
 namespace dotnet_lox;
 
-internal class FunctionObject(Function declaration, LoxEnvironment closure) : ICallable
+internal class FunctionObject(IFunction declaration, LoxEnvironment closure) : ICallable
 {
     public int Arity { get; } = declaration.Params.Count;
     
@@ -27,6 +27,6 @@ internal class FunctionObject(Function declaration, LoxEnvironment closure) : IC
 
     public override string? ToString()
     {
-        return $"<fn {declaration.Name.Lexeme}>";
+        return $"<fn {declaration.Name?.Lexeme ?? "anonymous"}>";
     }
 }

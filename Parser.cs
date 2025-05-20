@@ -79,6 +79,34 @@ internal class Parser
         return new Function(name, parameters, body);
     }
 
+    private Expr FunctionExpression()
+    {
+        var hasName = Check(TokenType.Identifier);
+        var name = hasName ? Consume(TokenType.Identifier, "Expect function name") : null;  
+        Consume(TokenType.LeftParen, "Expect '(' after function name.");
+        var parameters = new List<Token>();
+
+        if (!Check(TokenType.RightParen))
+        {
+            do
+            {
+                if (parameters.Count >= 255)
+                {
+                    Error(Peek(), "Can't have more than 255 parameters.");
+                }
+                
+                parameters.Add(
+                    Consume(TokenType.Identifier, "Expect parameter name.")
+                );
+            } while (Match(TokenType.Comma));
+        }
+        Consume(TokenType.RightParen, "Expect ')' after parameters.");
+        Consume(TokenType.LeftBrace, "Expect '{{' before function body.");
+        var body = Block();
+        
+        return new AnonymousFunction(name, parameters, body);
+    }
+
     Stmt VarDeclaration()
     {
         var name = Consume(TokenType.Identifier, "Expect variable name.");
@@ -408,6 +436,11 @@ internal class Parser
 
     Expr Primary()
     {
+        if (Match(TokenType.Fun))
+        {
+            return FunctionExpression();
+        }
+        
         if (Match(TokenType.False))
             return new Literal(false);
 

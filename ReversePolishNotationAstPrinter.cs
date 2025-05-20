@@ -46,4 +46,9 @@ class ReversePolishNotationAstPrinter : IExprVisitor<string>
     {
         throw new NotImplementedException();
     }
+
+    public string Visit(AnonymousFunction anonymous)
+    {
+        throw new NotImplementedException();
+    }
 }
