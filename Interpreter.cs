@@ -221,6 +221,13 @@ internal class Interpreter : IExprVisitor<object?>, IStmtVisitor<Nothing>
         return literal.Value;
     }
 
+    public object? Visit(Pipe pipe)
+    {
+        // This method should ideally not be reached if the Desugarer pass works correctly.
+        throw new RuntimeError(pipe.OperatorToken, 
+            "Internal error: Pipe expression should have been desugared before interpretation.");
+    }
+
     object? Evaluate(Expr expression)
     {
         return expression.Accept(this);

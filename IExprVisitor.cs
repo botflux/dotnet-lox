@@ -10,4 +10,5 @@ internal interface IExprVisitor<T>
     T Visit(Assign assign);
     T Visit(Logical logical);
     T Visit(Call call);
+    T Visit(Pipe pipe);
 }

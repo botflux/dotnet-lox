@@ -1,0 +1,5 @@
+fun base() { return 2; }
+print 10 |> $ + (base() * 3); // Expected: 16 (10 + (2*3))
+
+var factor = 3;
+print 5 |> $ * factor + $; // Expected: 20 (5*3 + 5)

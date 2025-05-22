@@ -1,0 +1,4 @@
+fun double(n) { return n * 2; }
+fun addThree(n) { return n + 3; }
+print 5 |> double($) |> addThree($); // Expected: 13 ((5*2)+3)
+print 5 |> addThree($) |> double($); // Expected: 16 ((5+3)*2)

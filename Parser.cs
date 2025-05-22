@@ -250,6 +250,34 @@ internal class Parser
         return Assignment();
     }
 
+    Expr Assignment()
+    {
+        // Note: The original Lox grammar has assignment at a very low precedence.
+        // If pipe is above assignment but below logical OR/AND, then
+        // Assignment -> Or (or whatever is above pipe)
+        // Or -> And
+        // And -> Pipe (new)
+        // Pipe -> Equality (or whatever is below pipe)
+        var expr = Or(); // Or should call Pipe, which calls And. Let's adjust.
+                         // Corrected chain: Assignment -> Or -> And -> Pipe -> Equality
+
+        if (!Match(TokenType.Equal))
+        {
+            return expr;
+        }
+
+        var equals = Previous();
+        var value = Assignment(); // Assignment is right-associative
+
+        if (expr is Variable variable)
+        {
+            return new Assign(variable.Name, value);
+        }
+        
+        Reporter.Error(equals, "Invalid assignment target.");
+        return expr;
+    }
+
     Expr Or()
     {
         var expr = And();
@@ -266,36 +294,29 @@ internal class Parser
 
     Expr And()
     {
-        var expr = Equality();
+        var expr = Pipe(); // And calls Pipe
 
         while (Match(TokenType.And))
         {
             var op = Previous();
-            var right = Equality();
+            var right = Pipe(); // And calls Pipe
             expr = new Logical(expr, op, right);
         }
 
         return expr;
     }
-    
-    Expr Assignment()
+
+    Expr Pipe() // New method for |> operator
     {
-        var expr = Or();
+        var expr = Equality(); // Pipe calls Equality
 
-        if (!Match(TokenType.Equal))
+        while (Match(TokenType.PipeGreater))
         {
-            return expr;
+            var op = Previous();
+            var right = Equality(); // Pipe calls Equality
+            expr = new Pipe(expr, op, right);
         }
 
-        var equals = Previous();
-        var value = Assignment();
-
-        if (expr is Variable variable)
-        {
-            return new Assign(variable.Name, value);
-        }
-        
-        Reporter.Error(equals, "Invalid assignment target.");
         return expr;
     }
 
@@ -421,6 +442,9 @@ internal class Parser
             return new Literal(Previous().Literal);
 
         if (Match(TokenType.Identifier))
+            return new Variable(Previous());
+
+        if (Match(TokenType.Dollar)) // Handling for $ placeholder
             return new Variable(Previous());
         
         if (Match(TokenType.LeftParen))

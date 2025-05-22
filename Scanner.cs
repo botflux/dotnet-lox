@@ -104,6 +104,18 @@ internal class Scanner
                     AddToken(TokenType.Or);
                 }
                 break;
+            case '|':
+                if (Match('>'))
+                {
+                    AddToken(TokenType.PipeGreater);
+                }
+                else
+                {
+                    // A lone '|' is not a valid token in Lox.
+                    Reporter.Error(line, "Unexpected character.");
+                }
+                break;
+            case '$': AddToken(TokenType.Dollar); break;
             default:
                 if (IsDigit(c))
                 {

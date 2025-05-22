@@ -1,0 +1,6 @@
+fun subtract(a, b) { return a - b; }
+print 10 |> subtract($, 3);  // Expected: 7 (10 - 3)
+print 10 |> subtract(20, $); // Expected: 10 (20 - 10)
+
+fun greet(p1, p2, p3) { print p1 + p2 + p3; }
+"hello" |> greet(" ", $, " world"); // Expected: " hello world"

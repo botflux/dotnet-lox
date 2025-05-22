@@ -1,0 +1,4 @@
+fun identity(x) { return x; }
+// This should cause a compile-time (desugaring) error.
+// The exact error message should be checked based on Reporter output.
+print 10 |> identity();

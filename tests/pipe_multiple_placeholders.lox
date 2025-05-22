@@ -1,0 +1,5 @@
+fun duplicate(a, b) { print a; print b; }
+"echo" |> duplicate($, $); // Expected: "echo", "echo" (on separate lines)
+
+fun sumThree(x, y, z) { return x + y + z; }
+print 1 |> sumThree($, $ * 2, $ * 3); // Expected: 6 (1 + 2 + 3)

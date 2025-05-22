@@ -59,16 +59,18 @@ void Run(string source)
     var scanner = new Scanner(source);
     var tokens = scanner.ScanTokens();
     var parser = new Parser(tokens);
-    var expression = parser.Parse();
+    var statements = parser.Parse(); // Renamed from expression for clarity
 
     if (Reporter.HadError)
         return;
 
-    if (expression == null)
-    {
-        Console.WriteLine("The parser returned no expression");
-        return;
-    }
+    // Removed null check for 'statements' as parser.Parse() returns List<Stmt> (can be empty, not null)
 
-    interpreter.Interpret(expression);
+    var desugarer = new Desugarer();
+    var desugaredStatements = desugarer.Desugar(statements);
+
+    if (Reporter.HadError) // Check for errors from desugaring (e.g., missing '$')
+        return;
+
+    interpreter.Interpret(desugaredStatements);
 }

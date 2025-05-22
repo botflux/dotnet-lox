@@ -50,6 +50,11 @@ class AstPrinter : IExprVisitor<string>
         throw new NotImplementedException();
     }
 
+    public string Visit(Pipe pipe)
+    {
+        return Parenthesize(pipe.OperatorToken.Lexeme, pipe.Left, pipe.Right);
+    }
+
     private string Parenthesize(string name, params Expr[] exprs)
     {
         var builder = new StringBuilder();

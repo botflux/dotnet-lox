@@ -15,5 +15,8 @@ internal enum TokenType
     And, Class, Else, False, Fun, For, If, Nil, Or,
     Print, Return, Super, This, True, Var, While,
 
+    PipeGreater, // New token for |>
+    Dollar,      // New token for $
+
     EOF
 }
